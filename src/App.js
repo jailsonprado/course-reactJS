@@ -1,5 +1,4 @@
 import React from 'react';
-import Produto from './Produto';
 // Os links abaixo puxam dados de um produto em formato JSON
 // https://ranekapi.origamid.dev/json/api/produto/tablet
 // https://ranekapi.origamid.dev/json/api/produto/smartphone
@@ -11,31 +10,28 @@ import Produto from './Produto';
 
 const App = () => {
   const [dados, setDados] = React.useState(null);
-  const [carregando, setCarregando] = React.useState(null);
+  const [contar, setContar] = React.useState(0);
 
-  async function handleClick(event) {
-    setCarregando(true);
-    const response = await fetch(
-      `https://ranekapi.origamid.dev/json/api/produto/${event.target.innerText}`,
-    );
-    const json = await response.json();
-    setDados(json);
-    setCarregando(false);
-  }
+  React.useEffect(() => {
+    fetch('https://ranekapi.origamid.dev/json/api/produto/notebook')
+      .then((response) => response.json())
+      .then((json) => setDados(json));
+  }, []);
 
   return (
     <>
-      <button style={{ margin: '10px' }} onClick={handleClick}>
-        notebook
-      </button>
-      <button style={{ margin: '10px' }} onClick={handleClick}>
-        smartphone
-      </button>
-      <button style={{ margin: '10px' }} onClick={handleClick}>
-        tablet
-      </button>
-      {carregando && <p>Carregando...</p>}
-      {!carregando && dados && <Produto dados={dados} />}
+      {dados && (
+        <div>
+          <h1>{dados.nome}</h1>
+          <img
+            style={{ width: '300px', height: '300px' }}
+            src={dados.fotos[0].src}
+            alt={dados.fotos[0].titulo}
+          />
+          <p>R$ {dados.preco * contar}</p>
+        </div>
+      )}
+      <button onClick={() => setContar(contar + 1)}>Carrinho + {contar}</button>
     </>
   );
 };

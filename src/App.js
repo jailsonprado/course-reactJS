@@ -1,4 +1,5 @@
 import React from 'react';
+import Produto from './Produto';
 // Os links abaixo puxam dados de um produto em formato JSON
 // https://ranekapi.origamid.dev/json/api/produto/tablet
 // https://ranekapi.origamid.dev/json/api/produto/smartphone
@@ -9,29 +10,28 @@ import React from 'react';
 // Mostre a mensagem carregando... enquanto o fetch é realizado
 
 const App = () => {
-  const [dados, setDados] = React.useState(null);
-  const [contar, setContar] = React.useState(0);
+  const [produto, setProduto] = React.useState(null);
 
   React.useEffect(() => {
-    fetch('https://ranekapi.origamid.dev/json/api/produto/notebook')
-      .then((response) => response.json())
-      .then((json) => setDados(json));
+    const produtoLocal = window.localStorage.getItem('produto');
+    if (produtoLocal !== null) setProduto(produtoLocal);
   }, []);
 
+  React.useEffect(() => {
+    if (produto !== null) window.localStorage.setItem('produto', produto);
+  }, [produto]);
+
+  function handleClick({ target }) {
+    setProduto(target.innerText);
+  }
   return (
     <>
-      {dados && (
-        <div>
-          <h1>{dados.nome}</h1>
-          <img
-            style={{ width: '300px', height: '300px' }}
-            src={dados.fotos[0].src}
-            alt={dados.fotos[0].titulo}
-          />
-          <p>R$ {dados.preco * contar}</p>
-        </div>
-      )}
-      <button onClick={() => setContar(contar + 1)}>Carrinho + {contar}</button>
+      <h1>Preferencia: {produto}</h1>
+      <button onClick={handleClick} style={{ marginRight: '10px' }}>
+        notebook
+      </button>
+      <button onClick={handleClick}>smartphone</button>
+      <Produto produto={produto} />
     </>
   );
 };

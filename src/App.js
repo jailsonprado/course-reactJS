@@ -1,13 +1,12 @@
 import React from 'react';
+import Produto from './Produto';
+import { GlobalStorage } from './GlobalContext';
 
 const App = () => {
-  const video = React.useRef();
-  console.log(video);
-
   return (
-    <>
-      <div ref={video}>Teste</div>
-    </>
+    <GlobalStorage>
+      <Produto />
+    </GlobalStorage>
   );
 };
 
